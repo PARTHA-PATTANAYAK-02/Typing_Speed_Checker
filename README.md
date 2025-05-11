@@ -69,7 +69,9 @@ npm run dev
 
 ## 🌐 Deployment
 
-## This project can be deployed easily using: Vercel
+## This project can be deployed easily using:
+
+- ### 🔗 [vercel](https://typing-speed-checker-delta.vercel.app/)
 
 ## ✍️ Author
 
