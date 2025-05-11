@@ -16,8 +16,6 @@ A fast, responsive, and beautifully designed **Typing Speed Checker App** built 
 | ----------------------------------------- | ------------------------------------------- |
 | ![Dark Mode](./screenshots/dark-mode.png) | ![Light Mode](./screenshots/light-mode.png) |
 
-> _Add your screenshots in a `/screenshots` folder_
-
 ---
 
 ## 🚀 Features
@@ -46,11 +44,25 @@ A fast, responsive, and beautifully designed **Typing Speed Checker App** built 
 
 ### 📦 Installation
 
-Clone the repo and install dependencies:
+Clone the repo :
 
 ```bash
 git clone https://github.com/PARTHA-PATTANAYAK-02/typing-speed-checker.git
 cd typing-speed-checker
+```
+
+install dependencies:
+
+```bash
+npm install
+```
+
+also see the package.json
+
+Run the development server :
+
+```bash
+npm run dev
 ```
 
 ---
