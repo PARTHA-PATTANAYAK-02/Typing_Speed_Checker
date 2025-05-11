@@ -34,6 +34,14 @@ A fast, responsive, and beautifully designed **Typing Speed Checker App** built 
 
 ---
 
+## 🧰 Tech Stack
+
+- ⚛️ [React](https://reactjs.org/) — Frontend JavaScript library
+- 💨 [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework
+- ⚙️ [Vite](https://vitejs.dev/) — Lightning fast build tool
+
+---
+
 ## 🧪 Getting Started
 
 ### 📦 Installation
@@ -43,9 +51,14 @@ Clone the repo and install dependencies:
 ```bash
 git clone https://github.com/PARTHA-PATTANAYAK-02/typing-speed-checker.git
 cd typing-speed-checker
-npm install
-🔧 Development
-npm run dev
-👨‍💻 Author
-Made with ❤️ by Partha Pattanayak
 ```
+
+---
+
+## 🌐 Deployment
+
+## This project can be deployed easily using: Vercel
+
+## ✍️ Author
+
+**Made with ❤️ by [Partha Pattanayak](https://github.com/PARTHA-PATTANAYAK-02)**
