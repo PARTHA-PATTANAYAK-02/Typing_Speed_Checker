@@ -103,7 +103,9 @@ export default function TypingTest() {
           {darkMode ? "☀ Light" : "🌙 Dark"}
         </button>
 
-        <h1 className="text-3xl font-bold">Typing Speed Checker</h1>
+        <h1 className="text-3xl flex justify-center font-bold">
+          Typing Speed Checker
+        </h1>
 
         <div className="flex justify-center gap-4 mb-4">
           {[15, 30, 60].map((d) => (
@@ -165,9 +167,13 @@ export default function TypingTest() {
           <div
             style={{
               width: `${((duration - timeLeft) / duration) * 100}%`,
-              transition: "width 0.4s ease",
+              transition: "all 1s linear",
             }}
-            className="h-full bg-blue-500 rounded-full"
+            className={`h-full bg-blue-500 rounded-full ${
+              ((duration - timeLeft) / duration) * 100 > 80
+                ? "bg-orange-500"
+                : "bg-blue-500"
+            }`}
           />
         </div>
 
