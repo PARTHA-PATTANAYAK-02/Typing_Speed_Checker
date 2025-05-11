@@ -9,12 +9,12 @@ export default function TypingTest() {
   const [accuracy, setAccuracy] = useState(0);
   const [darkMode, setDarkMode] = useState(true);
   const [isInputActive, setIsInputActive] = useState(false);
-  const [bestWpm, setBestWpm] = useState(localStorage.getItem("bestWpm") || 0);
+  const [bestWpm, setBestWpm] = useState(
+    parseInt(localStorage.getItem("bestWpm")) || 0
+  );
   const [duration, setDuration] = useState(0); // Time duration
   const timer = useRef(null);
-
-  // Handle the sentence based on selected duration
-  useEffect(() => {
+  function newText() {
     const loadText = async () => {
       const res = await import("./sentences.json");
       const data = res.default;
@@ -28,8 +28,12 @@ export default function TypingTest() {
         setText(data.long[Math.floor(Math.random() * data.long.length)]);
       }
     };
-
+    setIsInputActive(false);
     loadText();
+  }
+  // Handle the sentence based on selected duration
+  useEffect(() => {
+    newText();
   }, [duration]);
 
   // Timer logic
@@ -39,7 +43,7 @@ export default function TypingTest() {
     } else if (timeLeft === 0) {
       setStarted(false);
       if (wpm > bestWpm) {
-        localStorage.setItem("bestWpm", wpm);
+        localStorage.setItem("bestWpm", wpm.toString());
         setBestWpm(wpm);
       }
     }
@@ -70,16 +74,20 @@ export default function TypingTest() {
     setStarted(false);
     setWpm(0);
     setAccuracy(100);
+    setIsInputActive(false);
+    newText();
   };
 
   const toggleTheme = () => setDarkMode(!darkMode);
 
   // Select duration
   const selectDuration = (d) => {
-    setDuration(d);
-    setInput("");
-    setTimeLeft(d);
-    setStarted(false);
+    if (!started) {
+      setDuration(d);
+      setInput("");
+      setTimeLeft(d);
+      newText();
+    }
   };
 
   return (
@@ -90,6 +98,7 @@ export default function TypingTest() {
     >
       <div className="max-w-3xl mx-auto text-center space-y-4">
         <span
+          title="input active or not"
           className={`float-left px-2 py-2 rounded text-white ${
             isInputActive ? "bg-green-600" : "bg-red-600"
           } `}
@@ -97,7 +106,9 @@ export default function TypingTest() {
           Input {isInputActive ? "Active" : "Inactive"}
         </span>
         <button
+          disabled={started}
           onClick={toggleTheme}
+          title="mode"
           className="float-right px-4 py-2 rounded bg-indigo-500 text-white cursor-pointer"
         >
           {darkMode ? "☀ Light" : "🌙 Dark"}
@@ -112,13 +123,14 @@ export default function TypingTest() {
             <button
               key={d}
               onClick={() => selectDuration(d)}
-              className={`px-4 py-2 rounded cursor-pointer  ${
+              title={`timer ${d}s`}
+              className={`px-4 py-2 rounded cursor-pointer flex gap-1  ${
                 duration === d
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 dark:bg-gray-700"
               }`}
             >
-              {d}s
+              {d}s {d === duration ? <p title="Refresh">🔄️</p> : ""}
             </button>
           ))}
         </div>
@@ -148,11 +160,14 @@ export default function TypingTest() {
               : "bg-white text-black placeholder-gray-600 "
           }
           ${isInputActive ? "border-green-700" : "border-red-700"}`}
+          autoCorrect="off"
+          autoComplete="off"
+          spellCheck="false"
           rows="5"
           value={input}
           onChange={handleInput}
           disabled={timeLeft === 0 || duration === 0}
-          placeholder="Start typing here..."
+          placeholder="👆 Click here and start typing to begin the test..."
           onFocus={() => setIsInputActive(true)}
           onBlur={() => setIsInputActive(false)}
         />
@@ -179,6 +194,7 @@ export default function TypingTest() {
 
         <button
           onClick={restart}
+          title="Restart"
           className="mt-4 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
         >
           🔁 Restart
