@@ -28,6 +28,7 @@ A fast, responsive, and beautifully designed **Typing Speed Checker App** built 
 - 🌙 Dark / Light mode toggle with memory
 - 🏅 Best WPM saved in localStorage
 - ⚡ Animated progress bar
+- 🔉 Sound features
 - 🎯 Clean, responsive UI with Tailwind CSS
 
 ---

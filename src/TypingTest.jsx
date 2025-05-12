@@ -12,7 +12,7 @@ import {
 export default function TypingTest() {
   const [text, setText] = useState("");
   const [input, setInput] = useState("");
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState("Not Set");
   const [started, setStarted] = useState(false);
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
@@ -24,6 +24,21 @@ export default function TypingTest() {
   const [duration, setDuration] = useState(0); // Time duration
   const timer = useRef(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [sound, setSound] = useState(true);
+  const audioRef = useRef(new Audio("./clock.mp3"));
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (started && sound) {
+      audio.play();
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [started, sound]);
   function newText() {
     const loadText = async () => {
       const res = await import("./sentences.json");
@@ -51,8 +66,8 @@ export default function TypingTest() {
     if (started && timeLeft > 0) {
       timer.current = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     } else if (timeLeft === 0) {
-      setStarted(false);
       setTimeout(() => {
+        setStarted(false);
         setShowAlert(true);
       }, 1000);
       if (wpm > bestWpm) {
@@ -83,13 +98,15 @@ export default function TypingTest() {
   };
 
   const restart = () => {
-    setInput("");
-    setTimeLeft(duration);
-    setStarted(false);
-    setWpm(0);
-    setAccuracy(100);
-    setIsInputActive(false);
-    newText();
+    if (duration) {
+      setInput("");
+      setTimeLeft(duration);
+      setStarted(false);
+      setWpm(0);
+      setAccuracy(100);
+      setIsInputActive(false);
+      newText();
+    }
   };
 
   const toggleTheme = () => setDarkMode(!darkMode);
@@ -123,7 +140,9 @@ export default function TypingTest() {
           disabled={started}
           onClick={toggleTheme}
           title="mode"
-          className="float-right px-4 py-2 rounded bg-indigo-500 text-white cursor-pointer"
+          className={`float-right px-4 py-2 rounded bg-indigo-500 text-white ${
+            started ? "cursor-not-allowed" : "cursor-pointer"
+          }`}
         >
           {darkMode ? "☀ Light" : "🌙 Dark"}
         </button>
@@ -133,6 +152,13 @@ export default function TypingTest() {
         </h1>
 
         <div className="flex justify-center gap-4 mb-4">
+          <button
+            title="Sound"
+            className="cursor-pointer text-2xl"
+            onClick={() => setSound(!sound)}
+          >
+            {sound ? "🔉" : "🔇"}
+          </button>
           {[15, 30, 60].map((d) => (
             <button
               key={d}
@@ -171,7 +197,9 @@ export default function TypingTest() {
               ? "bg-gray-900 text-white placeholder-gray-400 "
               : "bg-white text-black placeholder-gray-600 "
           }
-          ${isInputActive ? "border-green-700" : "border-red-700"}`}
+          ${isInputActive ? "border-green-700" : "border-red-700"} ${
+            !duration ? "cursor-not-allowed" : ""
+          }`}
           autoCorrect="off"
           autoComplete="off"
           spellCheck="false"
@@ -184,7 +212,7 @@ export default function TypingTest() {
           onBlur={() => setIsInputActive(false)}
         />
 
-        <div className="flex justify-around items-center mt-2 text-3xl">
+        <div className="flex justify-around items-center mt-2 text-2xl">
           <p>⏳ Time: {timeLeft}s</p>
         </div>
 
@@ -205,7 +233,9 @@ export default function TypingTest() {
         <button
           onClick={restart}
           title="Restart"
-          className="mt-4 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
+          className={`mt-4 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 ${
+            !duration ? "cursor-not-allowed" : "cursor-pointer"
+          }`}
         >
           🔁 Restart
         </button>
