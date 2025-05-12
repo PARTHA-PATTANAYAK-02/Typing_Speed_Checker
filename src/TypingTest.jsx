@@ -23,7 +23,7 @@ export default function TypingTest() {
   );
   const [duration, setDuration] = useState(0); // Time duration
   const timer = useRef(null);
-  const [showAlert, setShowAlert] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
   function newText() {
     const loadText = async () => {
       const res = await import("./sentences.json");
