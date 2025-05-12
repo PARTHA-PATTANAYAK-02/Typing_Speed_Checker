@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 export default function TypingTest() {
   const [text, setText] = useState("");
   const [input, setInput] = useState("");
@@ -14,6 +23,7 @@ export default function TypingTest() {
   );
   const [duration, setDuration] = useState(0); // Time duration
   const timer = useRef(null);
+  const [showAlert, setShowAlert] = useState(true);
   function newText() {
     const loadText = async () => {
       const res = await import("./sentences.json");
@@ -42,6 +52,9 @@ export default function TypingTest() {
       timer.current = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     } else if (timeLeft === 0) {
       setStarted(false);
+      setTimeout(() => {
+        setShowAlert(true);
+      }, 1000);
       if (wpm > bestWpm) {
         localStorage.setItem("bestWpm", wpm.toString());
         setBestWpm(wpm);
@@ -56,7 +69,8 @@ export default function TypingTest() {
 
     const words = input.trim().split(/\s+/).length;
     const mins = (duration - timeLeft) / 60;
-    setWpm(Math.round(words / mins));
+    const w = Math.round(words / mins);
+    setWpm(w == "Infinity" ? 0 : w);
 
     const correct = input.split("").filter((ch, i) => ch === text[i]).length;
 
@@ -124,11 +138,9 @@ export default function TypingTest() {
               key={d}
               onClick={() => selectDuration(d)}
               title={`timer ${d}s`}
-              className={`px-4 py-2 rounded cursor-pointer flex gap-1  ${
-                duration === d
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
-              }`}
+              className={`px-4 py-2 rounded cursor-pointer flex gap-1 text-black  ${
+                duration === d ? "bg-blue-600! text-white" : ""
+              } ${darkMode ? "bg-gray-200" : "bg-gray-500"}`}
             >
               {d}s {d === duration ? <p title="Refresh">🔄️</p> : ""}
             </button>
@@ -172,10 +184,8 @@ export default function TypingTest() {
           onBlur={() => setIsInputActive(false)}
         />
 
-        <div className="flex justify-around items-center mt-4 text-lg">
+        <div className="flex justify-around items-center mt-2 text-3xl">
           <p>⏳ Time: {timeLeft}s</p>
-          <p>📈 WPM: {wpm}</p>
-          <p>🎯 Accuracy: {isNaN(accuracy) ? 0 : accuracy}%</p>
         </div>
 
         <div className="w-full h-3 bg-gray-300 dark:bg-gray-700 mt-4 rounded-full overflow-hidden">
@@ -200,8 +210,30 @@ export default function TypingTest() {
           🔁 Restart
         </button>
 
-        <p className="font-semibold mt-6">🏅 Best WPM (Saved): {bestWpm}</p>
+        <p className="font-semibold mt-2 text-2xl">
+          🏅 Best WPM (Saved): {bestWpm}
+        </p>
       </div>
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className={"text-2xl"}>
+              Times Up⌛
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <p className="text-black">📈 WPM: {wpm}</p>
+              <p className="text-black">
+                🎯 Accuracy: {isNaN(accuracy) ? 0 : accuracy}%
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction className={`cursor-pointer px-5`}>
+              Ok
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
